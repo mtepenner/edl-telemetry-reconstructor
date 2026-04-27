@@ -1,0 +1,59 @@
+edl-telemetry-reconstructor/
+│
+├── .github/                             # Automated CI/CD pipelines
+│   └── workflows/
+│       ├── test-kalman-filter.yml       # Rigorous unit tests for the EKF matrix math
+│       └── build-pipeline.yml
+│
+├── flight_simulator/                    # Python: The Raw Data Generator (The "Spacecraft")
+│   ├── app/
+│   │   ├── dynamics/
+│   │   │   └── descent_profile.py       # Simulates true physics: aerodynamic drag, gravity, thrust
+│   │   ├── sensors/
+│   │   │   ├── imu_model.py             # Adds Gaussian noise, bias, and random walk to acceleration/rotation
+│   │   │   └── radar_model.py           # Simulates altimeter pings, adding noise based on Martian terrain
+│   │   └── main.py                      # Streams the noisy packets via UDP or Kafka
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── telemetry_pipeline/                  # Go: High-Throughput Ingestion & Fusion Engine
+│   ├── cmd/
+│   │   └── fusion_server/
+│   │       └── main.go                  # Consumes the raw data stream and broadcasts the filtered state
+│   ├── internal/
+│   │   ├── ingestion/
+│   │   │   └── kafka_consumer.go        # Buffers incoming packets to handle network jitter
+│   │   ├── estimation/
+│   │   │   ├── matrices.go              # Fast linear algebra operations using Gonum
+│   │   │   └── extended_kalman.go       # THE CORE MATH: Predicts state via IMU, Updates via Radar
+│   │   └── publisher/
+│   │       └── websocket_broadcaster.go # Pushes the clean, fused state (Quaternions + Position) at 60Hz
+│   ├── go.mod
+│   └── Dockerfile                       # CPU-optimized Go binary
+│
+├── mission_playback_ui/                 # React + TypeScript: The 3D Visualization Dashboard
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Descent3D.tsx            # Three.js canvas rendering the spacecraft, heat shield, and terrain
+│   │   │   ├── AltitudeVelocityChart.tsx# Graphs the Raw Noise vs. the Kalman Filtered truth
+│   │   │   ├── OrientationHUD.tsx       # Navball/Artificial Horizon driven by the filtered Quaternions
+│   │   │   └── TimelineScrubber.tsx     # Allows the operator to rewind and replay specific descent events
+│   │   ├── hooks/
+│   │   │   └── useTelemetry.ts          # Manages the WebSocket connection and state buffering
+│   │   ├── App.tsx
+│   │   └── index.tsx
+│   ├── package.json                     # Needs three, @react-three/fiber, recharts
+│   └── Dockerfile
+│
+├── infrastructure/                      # Deployment Orchestration
+│   ├── kafka-cluster.yaml               # Message broker to handle the massive telemetry throughput
+│   ├── timescaledb.yaml                 # Stores both the raw and filtered datasets for post-mission review
+│   ├── fusion-engine.yaml
+│   └── ingress.yaml
+│
+├── docker-compose.yml                   # Boots the Sim, Go Pipeline, React UI, Kafka, and DB locally
+├── Makefile
+└── README.md
+
+
+
