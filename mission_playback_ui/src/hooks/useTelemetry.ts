@@ -3,7 +3,7 @@
  * Manages WebSocket connection and state buffering
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export interface TelemetryState {
   timestamp: number;
