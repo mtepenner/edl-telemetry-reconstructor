@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid, Line } from '@react-three/drei';
-import { Group, Vector3, Euler } from 'three';
+import { Group, Euler } from 'three';
 import { TelemetryState } from '../hooks/useTelemetry';
 
 interface Descent3DProps {
