@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Grid } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Grid, Line } from '@react-three/drei';
 import { Group, Vector3, Euler } from 'three';
 import { TelemetryState } from '../hooks/useTelemetry';
 
@@ -77,20 +77,9 @@ const MarsTerrain: React.FC = () => {
  * Trajectory trail
  */
 const TrajectoryTrail: React.FC<{ positions: [number, number, number][] }> = ({ positions }) => {
-  const points = positions.map((p) => [p[0] / 1000, -p[2] / 1000, p[1] / 1000]);
+  const points: [number, number, number][] = positions.map((p) => [p[0] / 1000, -p[2] / 1000, p[1] / 1000]);
 
-  const geometry = React.useMemo(() => {
-    const geom = new (require('three') as any).BufferGeometry();
-    const positionArray = new Float32Array(points.flat());
-    geom.setAttribute('position', new (require('three') as any).BufferAttribute(positionArray, 3));
-    return geom;
-  }, [points]);
-
-  return (
-    <line geometry={geometry}>
-      <lineBasicMaterial color="#00ff00" linewidth={2} />
-    </line>
-  );
+  return <Line points={points} color="#00ff00" lineWidth={2} />;
 };
 
 /**
