@@ -1,0 +1,29 @@
+name: Build Pipeline
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Flight Simulator
+        working-directory: ./flight_simulator
+        run: |
+          python -m pip install -r requirements.txt
+          python -m py_compile app/main.py
+
+      - name: Build Go Pipeline
+        working-directory: ./telemetry_pipeline
+        run: |
+          go build -o fusion_server ./cmd/fusion_server
+
+      - name: Build React UI
+        working-directory: ./mission_playback_ui
+        run: |
+          npm ci
+          npm run build
+
+      - name: Docker Build (if applicable)
+        run: |
+          echo "Docker build would happen in CI/CD pipeline with credentials"

@@ -1,0 +1,27 @@
+name: Test Kalman Filter
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      - name: Install dependencies
+        working-directory: ./telemetry_pipeline
+        run: go mod download
+
+      - name: Run Kalman Filter tests
+        working-directory: ./telemetry_pipeline
+        run: |
+          go test -v ./internal/estimation/...
+
+      - name: Check code quality
+        working-directory: ./telemetry_pipeline
+        run: |
+          go vet ./...
