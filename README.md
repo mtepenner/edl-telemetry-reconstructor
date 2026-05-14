@@ -30,7 +30,7 @@ The EDL (Entry, Descent, and Landing) Telemetry Reconstructor is a robust, end-t
 
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/yourusername/edl-telemetry-reconstructor.git](https://github.com/yourusername/edl-telemetry-reconstructor.git)
+   git clone https://github.com/mtepenner/edl-telemetry-reconstructor.git
    cd edl-telemetry-reconstructor
    ```
 
